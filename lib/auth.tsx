@@ -4,34 +4,62 @@ import { useRouter } from 'next/router';
 import { getAuth, GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
 import app from './firebase';
 
+// Firebase
+const auth = getAuth(app);
+const ghProvider = new GithubAuthProvider();
+
+//  Types
+type MyUser = ReturnType<typeof formatUser>;
+
 type AuthContextType = {
-    user: User | null;
+    user: MyUser | null;
     loading: boolean;
     signinWithGitHub: () => void;
     signout: () => void;
 };
 
+// Utils
+function formatUser(user: User) {
+    return {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName,
+        provider: user.providerData[0].providerId,
+        photoUrl: user.photoURL,
+    }
+}
+
+// Context
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<MyUser | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    const auth = getAuth(app);
-    const ghProvider = new GithubAuthProvider();
+    const handleUser = (rawUser?: User) => {
+        if (rawUser) {
+            const user = formatUser(rawUser);
+            setUser(user);
+           
+            return user;
+        } else {
+            setUser(null);
+            return null;
+        }
+    };
 
     const signinWithGitHub = () => {
         return signInWithPopup(auth, ghProvider).then((result) => {
-            setUser(result.user);
-            return result.user;
+            console.log(result.user);
+            return handleUser(result.user);
         });
     };
 
     const signout = () => {
         router.push('/');
 
-        return signOut(auth).then(() => setUser(null));
+        return signOut(auth).then(() => handleUser());
     };
 
     const context = {
@@ -46,4 +74,5 @@ const AuthProvider: React.FC = ({ children }) => {
 
 const useAuth = () => useContext(AuthContext);
 
+// Exports
 export { AuthProvider, useAuth };
