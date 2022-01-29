@@ -19,6 +19,7 @@ const Home: NextPage = () => {
                 {!auth?.user && <button onClick={auth?.signinWithGitHub}>Sign In</button>}
                 {auth?.user && <button onClick={auth?.signout}>Sign Out</button>}
                 <div>{auth?.user?.email}</div>
+                <dev>Test</dev>
             </main>
             <footer className={styles.footer}></footer>
         </div>
