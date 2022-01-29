@@ -1,15 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import {getAuth, GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
+import { getAuth, GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
 import app from './firebase';
 
-
-const auth = getAuth(app);
-const ghProvider = new GithubAuthProvider();
-
 type AuthContextType = {
-    user: User | null
+    user: User | null;
     loading: boolean;
     signinWithGitHub: () => void;
     signout: () => void;
@@ -17,10 +13,13 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-function useProvideAuth() {
+const AuthProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+
+    const auth = getAuth(app);
+    const ghProvider = new GithubAuthProvider();
 
     const signinWithGitHub = () => {
         return signInWithPopup(auth, ghProvider).then((result) => {
@@ -32,16 +31,19 @@ function useProvideAuth() {
     const signout = () => {
         router.push('/');
 
-        return signOut(auth)
-            .then(() => setUser(null));
+        return signOut(auth).then(() => setUser(null));
     };
 
-    return { user, loading, signinWithGitHub, signout };
-}
+    const context = {
+        user,
+        loading,
+        signinWithGitHub,
+        signout,
+    };
 
-export const AuthProvider: React.FC = ({ children }) => {
-    const auth = useProvideAuth();
-    return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={context}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => useContext(AuthContext);
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };
