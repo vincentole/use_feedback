@@ -10,4 +10,11 @@ async function createUser(user: MyUser) {
     setDoc(userRef, { ...user }, { merge: true });
 }
 
-export { createUser };
+
+
+async function createSite(data: any) {
+    const siteRef = doc(db, 'sites', 'mySites');
+    setDoc(siteRef, { ...data }, { merge: true });
+}
+
+export { createUser, createSite };

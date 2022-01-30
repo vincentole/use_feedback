@@ -44,6 +44,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
             setUser(user);
             createUser(user);
+            router.push('/dashboard');
             return user;
         } else {
             setUser(null);

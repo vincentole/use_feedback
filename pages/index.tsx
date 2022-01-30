@@ -1,28 +1,27 @@
+import { Button, Flex} from '@chakra-ui/react';
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import { useAuth } from '../lib/auth';
-import styles from '../styles/Home.module.css';
+import { useAuth } from '@/lib/auth';
+import { LogoIcon } from '@/styles/theme';
 
 const Home: NextPage = () => {
     const auth = useAuth();
 
     return (
-        <div className={styles.container}>
-            <Head>
-                <title>Use Feedback</title>
-                <meta name='description' content='Use feedback in your project.' />
-                <link rel='icon' href='/favicon.ico' />
-            </Head>
-
-            <main className={styles.main}>
-                <h1 className={styles.title}>Use Feedback</h1>
-                {!auth?.user && <button onClick={auth?.signinWithGitHub}>Sign In</button>}
-                {auth?.user && <button onClick={auth?.signout}>Sign Out</button>}
-                <div>{auth?.user?.email}</div>
-                <div>Test</div>
-            </main>
-            <footer className={styles.footer}></footer>
-        </div>
+        <Flex as='main' direction='column' align='center' justify='center' h='100vh'>
+            {!auth?.user && (
+                <>
+                    <LogoIcon boxSize={50} />
+                    <Button size='sm' mt='4' onClick={auth?.signinWithGitHub}>
+                        Sign In
+                    </Button>
+                </>
+            )}
+            {auth?.user && (
+                <Button size='sm' mt='4' onClick={auth?.signout}>
+                    Sign Out
+                </Button>
+            )}
+        </Flex>
     );
 };
 
