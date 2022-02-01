@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { getAuth, GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
-import app from './firebase';
+import { GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
+import { auth } from './firebase';
 import { createUser } from './firestore';
 
 // Firebase
-const auth = getAuth(app);
 const ghProvider = new GithubAuthProvider();
 
 //  Types

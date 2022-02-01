@@ -1,3 +1,4 @@
+import { useAuth } from '@/lib/auth';
 import { createSite } from '@/lib/firestore';
 import {
     Button,
@@ -12,20 +13,27 @@ import {
     ModalHeader,
     ModalOverlay,
     useDisclosure,
+    useToast,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 type Inputs = {
-    name: string;
     site: string;
+    url: string;
 };
+
+export interface createSiteDataType extends Inputs {
+    userId: string | undefined;
+    createdAt: string;
+}
 
 const AddSiteModal = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = useRef<HTMLInputElement>(null);
     const finalRef = useRef<HTMLButtonElement>(null);
-
+    const toast = useToast();
+    const auth = useAuth();
     const {
         register,
         handleSubmit,
@@ -35,9 +43,19 @@ const AddSiteModal = () => {
 
     const onCreateSite: SubmitHandler<Inputs> = (data, e) => {
         e!.preventDefault();
-        console.log(data);
-        createSite(data);
-        // onClose();
+        createSite({
+            userId: auth?.user?.uid,
+            createdAt: new Date().toISOString(),
+            ...data,
+        });
+        onClose();
+        toast({
+            title: 'Success!',
+            description: "We've added your site.",
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+        });
     };
 
     return (
@@ -58,15 +76,21 @@ const AddSiteModal = () => {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <FormLabel>Name</FormLabel>
-                            <Input placeholder='My site' {...register('name')} required={true} />
+                            <FormLabel htmlFor='site'>Name</FormLabel>
+                            <Input
+                                id='site'
+                                placeholder='My site'
+                                {...register('site')}
+                                required={true}
+                            />
                         </FormControl>
 
                         <FormControl mt={4}>
-                            <FormLabel>Link</FormLabel>
+                            <FormLabel htmlFor='url'>Link</FormLabel>
                             <Input
+                                id='url'
                                 placeholder='https://website.com'
-                                {...register('site')}
+                                {...register('url')}
                                 required={true}
                             />
                         </FormControl>

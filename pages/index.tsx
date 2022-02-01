@@ -1,4 +1,4 @@
-import { Button, Flex} from '@chakra-ui/react';
+import { Button, Flex } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import { useAuth } from '@/lib/auth';
 import { LogoIcon } from '@/styles/theme';
