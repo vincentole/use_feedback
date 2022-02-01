@@ -5,11 +5,11 @@ import DashboardShell from '@/components/DashboardShell';
 import TableSkeleton from '@/components/TableSkeleton';
 import useSWR from 'swr';
 import fetcher from '@/utils/fetcher';
-import { SitesAPIData } from './api/sites';
+import { SitesAPIDataType } from './api/sites';
 import TableSites from '@/components/TableSites';
 
 const Dashboard: NextPage = () => {
-    const { data } = useSWR<SitesAPIData>('/api/sites', fetcher);
+    const { data } = useSWR<SitesAPIDataType>('/api/sites', fetcher);
 
     if (!data) {
         return (

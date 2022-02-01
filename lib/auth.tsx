@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -12,23 +12,27 @@ import { auth } from './firebase';
 import { createUser } from './firestore';
 
 //  Types
-export type MyUser = ReturnType<typeof formatUser>;
+export type MyUserType = Awaited<ReturnType<typeof formatUser>>;
+export type MyUserTypeWithoutTokenType = Omit<Awaited<ReturnType<typeof formatUser>>, 'token'>;
 
 type AuthContextType = {
-    user: MyUser | null;
+    user: MyUserType | null;
     loading: boolean;
     signinWithGitHub: () => void;
     signout: () => void;
 };
 
 // Utils
-function formatUser(user: User) {
+async function formatUser(user: User) {
+    const token = await user.getIdToken(true);
+
     return {
         uid: user.uid,
         email: user.email,
         name: user.displayName,
         provider: user.providerData[0].providerId,
         photoUrl: user.photoURL,
+        token: token,
     };
 }
 
@@ -36,16 +40,16 @@ function formatUser(user: User) {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
-    const [user, setUser] = useState<MyUser | null>(null);
+    const [user, setUser] = useState<MyUserType | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     const handleUser = async (rawUser?: User) => {
         if (rawUser) {
-            const user = formatUser(rawUser);
-
+            const user = await formatUser(rawUser);
+            const { token, ...userWithoutToken } = user;
             setUser(user);
-            createUser(user);
+            createUser(userWithoutToken);
             router.push('/dashboard');
             return user;
         } else {
@@ -77,8 +81,9 @@ const AuthProvider: React.FC = ({ children }) => {
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                setUser(formatUser(user));
-                
+                formatUser(user).then((fUser) => {
+                    setUser(fUser);
+                });
             } else {
             }
         });

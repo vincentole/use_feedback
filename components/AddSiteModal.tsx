@@ -1,5 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { createSite } from '@/lib/firestore';
+import { SitesAPIDataType } from '@/lib/firestore-admin';
 import { AddIcon } from '@chakra-ui/icons';
 import {
     Button,
@@ -16,7 +17,7 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
-import { SitesAPIData } from 'pages/api/sites';
+
 import { useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
@@ -26,7 +27,7 @@ type Inputs = {
     url: string;
 };
 
-export interface createSiteDataType extends Inputs {
+export interface SiteInputType extends Inputs {
     userId: string | undefined;
     createdAt: string;
 }
@@ -68,7 +69,7 @@ const AddSiteModal: React.FC = ({ children }) => {
 
         mutate(
             '/api/sites',
-            async (data: SitesAPIData) => {
+            async (data: SitesAPIDataType) => {
                 return { sites: [...data.sites, newSite] };
             },
             false,

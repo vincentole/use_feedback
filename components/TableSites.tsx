@@ -1,8 +1,10 @@
-import Link from 'next/link';
-import { SitesAPIData } from 'pages/api/sites';
+import { SitesAPIDataType } from '@/lib/firestore-admin';
+import NextLink from 'next/link';
 import { Table, Th, Tr, Td } from './Table';
+import { format, parseISO } from 'date-fns';
+import { Link } from '@chakra-ui/react';
 
-const TableSites: React.FC<SitesAPIData> = ({ sites }) => {
+const TableSites: React.FC<SitesAPIDataType> = ({ sites }) => {
     console.log(sites);
     return (
         <Table>
@@ -22,18 +24,15 @@ const TableSites: React.FC<SitesAPIData> = ({ sites }) => {
                             <Td fontWeight='medium'>{site.name}</Td>
                             <Td>{site.url}</Td>
                             <Td>
-                                <Link href='#'>View Feedback</Link>
+                                <NextLink
+                                    href='/sites/[siteId]'
+                                    as={`/sites/${site.siteId}`}
+                                    passHref={true}
+                                >
+                                    <Link>View Feedback</Link>
+                                </NextLink>
                             </Td>
-                            <Td>
-                                {new Date(site.createdAt).toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: '2-digit',
-                                    hour: '2-digit',
-                                    hourCycle: 'h12',
-                                    minute: '2-digit',
-                                })}
-                            </Td>
+                            <Td>{format(parseISO(site.createdAt), 'PPpp')}</Td>
                             <Td>Other</Td>
                         </Tr>
                     );
