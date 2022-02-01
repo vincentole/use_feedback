@@ -10,6 +10,7 @@ import {
 } from 'firebase/auth';
 import { auth } from './firebase';
 import { createUser } from './firestore';
+import Cookies from 'js-cookie';
 
 //  Types
 export type MyUserType = Awaited<ReturnType<typeof formatUser>>;
@@ -50,7 +51,7 @@ const AuthProvider: React.FC = ({ children }) => {
             const { token, ...userWithoutToken } = user;
             setUser(user);
             createUser(userWithoutToken);
-            router.push('/dashboard');
+            Cookies.set('use-feedback-auth', 'true', { expires: 1 });
             return user;
         } else {
             setUser(null);
@@ -66,6 +67,7 @@ const AuthProvider: React.FC = ({ children }) => {
     };
 
     const signout = () => {
+        Cookies.remove('use-feedback-auth');
         router.push('/');
 
         return signOut(auth).then(() => handleUser());

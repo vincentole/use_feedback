@@ -68,7 +68,7 @@ const AddSiteModal: React.FC = ({ children }) => {
         });
 
         mutate(
-            '/api/sites',
+            auth?.user ? ['/api/sites', auth.user.token] : null,
             async (data: SitesAPIDataType) => {
                 return { sites: [...data.sites, newSite] };
             },

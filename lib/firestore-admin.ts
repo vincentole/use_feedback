@@ -1,6 +1,6 @@
 import { SiteInputType } from '@/components/AddSiteModal';
 import { compareDesc, parseISO } from 'date-fns';
-import db from './firebase-admin';
+import { db } from './firebase-admin';
 
 export type FeedbackInputType = {
     author: string;
@@ -59,4 +59,15 @@ export async function getAllSites() {
     } catch (error) {
         return { error };
     }
+}
+
+export async function getUserSites(uid: string) {
+    const snapshot = await db.collection('sites').where('userId', '==', uid).get();
+    const sites: SiteDataInterface[] = [];
+
+    snapshot.forEach((doc) => {
+        sites.push({ siteId: doc.id, ...(doc.data() as SiteInputType) });
+    });
+
+    return { sites };
 }

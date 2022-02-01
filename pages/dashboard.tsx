@@ -5,11 +5,13 @@ import DashboardShell from '@/components/DashboardShell';
 import TableSkeleton from '@/components/TableSkeleton';
 import useSWR from 'swr';
 import fetcher from '@/utils/fetcher';
-import { SitesAPIDataType } from './api/sites';
+import { SitesAPIDataType } from '@/lib/firestore-admin';
+
 import TableSites from '@/components/TableSites';
 
 const Dashboard: NextPage = () => {
-    const { data } = useSWR<SitesAPIDataType>('/api/sites', fetcher);
+    const user = useAuth()?.user;
+    const { data } = useSWR<SitesAPIDataType>(user ? ['/api/sites', user?.token]: null, fetcher);
 
     if (!data) {
         return (

@@ -1,3 +1,11 @@
-const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json());
+const fetcher = async (url: string, token: string) => {
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: new Headers({ 'Content-Type': 'application/json', token }),
+        credentials: 'same-origin',
+    });
+
+    return response.json();
+};
 
 export default fetcher;

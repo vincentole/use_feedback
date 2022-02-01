@@ -5,7 +5,6 @@ import { format, parseISO } from 'date-fns';
 import { Link } from '@chakra-ui/react';
 
 const TableSites: React.FC<SitesAPIDataType> = ({ sites }) => {
-    console.log(sites);
     return (
         <Table>
             <thead>
