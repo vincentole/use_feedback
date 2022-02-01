@@ -34,13 +34,15 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name='description' content='Use feedback in your project.' />
                 <link rel='icon' href='/favicon.ico' />
             </Head>
-            <ChakraProvider theme={theme}>
-                <AuthProvider>
-                    <GlobalStyle>
-                        <Component {...pageProps} />
-                    </GlobalStyle>
-                </AuthProvider>
-            </ChakraProvider>
+            
+                <ChakraProvider theme={theme}>
+                    <AuthProvider>
+                        <GlobalStyle>
+                            <Component {...pageProps} />
+                        </GlobalStyle>
+                    </AuthProvider>
+                </ChakraProvider>
+            
         </>
     );
 }

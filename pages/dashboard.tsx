@@ -1,22 +1,37 @@
 import type { NextPage } from 'next';
 import { useAuth } from '@/lib/auth';
 import EmptyState from '@/components/EmtyState';
-import { Button } from '@chakra-ui/react';
+import DashboardShell from '@/components/DashboardShell';
+import TableSkeleton from '@/components/TableSkeleton';
+import useSWR from 'swr';
+import fetcher from '@/utils/fetcher';
+import { SitesAPIData } from './api/sites';
+import TableSites from '@/components/TableSites';
 
 const Dashboard: NextPage = () => {
-    const auth = useAuth();
+    const { data } = useSWR<SitesAPIData>('/api/sites', fetcher);
 
-    if (!auth?.user)
+    if (!data) {
         return (
-            <div>
-                <div>Loading ...</div>
-                <Button size='sm' mt='4' onClick={auth?.signinWithGitHub}>
-                    Sign In
-                </Button>
-            </div>
+            <DashboardShell>
+                <TableSkeleton />
+            </DashboardShell>
         );
+    }
 
-    return <EmptyState />;
+    if (data.sites.length === 0) {
+        return (
+            <DashboardShell>
+                <EmptyState />
+            </DashboardShell>
+        );
+    }
+
+    return (
+        <DashboardShell>
+            <TableSites sites={data.sites} />
+        </DashboardShell>
+    );
 };
 
 export default Dashboard;

@@ -1,5 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { createSite } from '@/lib/firestore';
+import { AddIcon } from '@chakra-ui/icons';
 import {
     Button,
     FormControl,
@@ -15,11 +16,13 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
+import { SitesAPIData } from 'pages/api/sites';
 import { useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useSWRConfig } from 'swr';
 
 type Inputs = {
-    site: string;
+    name: string;
     url: string;
 };
 
@@ -28,12 +31,14 @@ export interface createSiteDataType extends Inputs {
     createdAt: string;
 }
 
-const AddSiteModal = () => {
+const AddSiteModal: React.FC = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = useRef<HTMLInputElement>(null);
     const finalRef = useRef<HTMLButtonElement>(null);
     const toast = useToast();
     const auth = useAuth();
+    const { mutate } = useSWRConfig();
+
     const {
         register,
         handleSubmit,
@@ -41,13 +46,17 @@ const AddSiteModal = () => {
         formState: { errors },
     } = useForm<Inputs>();
 
-    const onCreateSite: SubmitHandler<Inputs> = (data, e) => {
+    const onCreateSite: SubmitHandler<Inputs> = ({ name, url }, e) => {
         e!.preventDefault();
-        createSite({
+
+        const newSite = {
             userId: auth?.user?.uid,
             createdAt: new Date().toISOString(),
-            ...data,
-        });
+            name,
+            url,
+        };
+
+        createSite(newSite);
         onClose();
         toast({
             title: 'Success!',
@@ -56,14 +65,31 @@ const AddSiteModal = () => {
             duration: 5000,
             isClosable: true,
         });
+
+        mutate(
+            '/api/sites',
+            async (data: SitesAPIData) => {
+                return { sites: [...data.sites, newSite] };
+            },
+            false,
+        );
     };
 
     return (
         <>
-            <Button ref={finalRef} onClick={onOpen}>
-                Add your first Site.
+            <Button
+                ref={finalRef}
+                onClick={onOpen}
+                leftIcon={<AddIcon stroke='white' color='white' boxSize={2} />}
+                rounded='sm'
+                backgroundColor='gray.900'
+                color='white'
+                _hover={{ bg: 'gray.700' }}
+                _active={{ bg: 'gray.800', transform: 'scale(0.95)' }}
+                size='sm'
+            >
+                {children}
             </Button>
-
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -76,11 +102,11 @@ const AddSiteModal = () => {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <FormLabel htmlFor='site'>Name</FormLabel>
+                            <FormLabel htmlFor='name'>Name</FormLabel>
                             <Input
-                                id='site'
+                                id='name'
                                 placeholder='My site'
-                                {...register('site')}
+                                {...register('name')}
                                 required={true}
                             />
                         </FormControl>

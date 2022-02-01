@@ -9,7 +9,9 @@ import {
     BreadcrumbLink,
     Stack,
     Heading,
+    Button,
 } from '@chakra-ui/react';
+import AddSiteModal from './AddSiteModal';
 
 const DashboardShell: React.FC = ({ children }) => {
     const auth = useAuth();
@@ -24,7 +26,11 @@ const DashboardShell: React.FC = ({ children }) => {
                 </Stack>
 
                 <Stack isInline spacing={4} align='center'>
-                    <Link>Account</Link>
+                    {auth?.user && (
+                        <Button onClick={auth?.signout} variant='link'>
+                            Log Out
+                        </Button>
+                    )}
                     <Avatar size='sm' src={auth?.user?.photoUrl as string} />
                 </Stack>
             </Flex>
@@ -35,7 +41,11 @@ const DashboardShell: React.FC = ({ children }) => {
                             <BreadcrumbLink>Sites</BreadcrumbLink>
                         </BreadcrumbItem>
                     </Breadcrumb>
-                    <Heading mb='4'>Sites</Heading>
+                    <Flex justify='space-between' align='center'>
+                        <Heading mb='4'>Sites</Heading>
+                        <AddSiteModal>add Site</AddSiteModal>
+                    </Flex>
+
                     {children}
                 </Flex>
             </Flex>

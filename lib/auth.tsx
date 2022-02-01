@@ -1,12 +1,15 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { GithubAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
+import {
+    GithubAuthProvider,
+    onAuthStateChanged,
+    signInWithPopup,
+    signOut,
+    User,
+} from 'firebase/auth';
 import { auth } from './firebase';
 import { createUser } from './firestore';
-
-// Firebase
-const ghProvider = new GithubAuthProvider();
 
 //  Types
 export type MyUser = ReturnType<typeof formatUser>;
@@ -52,6 +55,7 @@ const AuthProvider: React.FC = ({ children }) => {
     };
 
     const signinWithGitHub = () => {
+        const ghProvider = new GithubAuthProvider();
         return signInWithPopup(auth, ghProvider).then((result) => {
             return handleUser(result.user);
         });
@@ -69,6 +73,16 @@ const AuthProvider: React.FC = ({ children }) => {
         signinWithGitHub,
         signout,
     };
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(formatUser(user));
+                
+            } else {
+            }
+        });
+    }, []);
 
     return <AuthContext.Provider value={context}>{children}</AuthContext.Provider>;
 };
