@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { auth } from '@/lib/firebase-admin';
 import { FeedbackAPIDataType, getUserFeedback } from '@/lib/firestore-admin';
+import logger from '@/utils/logger';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // API
@@ -14,6 +15,7 @@ export default async function handler(
 
         res.status(200).json({ feedback });
     } catch (error) {
+        logger.error(error);
         res.status(500).json({ error });
     }
 }

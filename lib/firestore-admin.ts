@@ -22,20 +22,16 @@ export type FeedbackAPIDataType = {
 };
 
 export async function getAllFeedback(siteId: string) {
-    try {
-        const snapshot = await db.collection('feedback').where('siteId', '==', siteId).get();
-        const feedback: FeedbackDataInterface[] = [];
+    const snapshot = await db.collection('feedback').where('siteId', '==', siteId).get();
+    const feedback: FeedbackDataInterface[] = [];
 
-        snapshot.forEach((doc) => {
-            feedback.push({ feedbackId: doc.id, ...(doc.data() as FeedbackInputType) });
-        });
+    snapshot.forEach((doc) => {
+        feedback.push({ feedbackId: doc.id, ...(doc.data() as FeedbackInputType) });
+    });
 
-        feedback.sort((a, b) => compareDesc(parseISO(a.createdAt), parseISO(b.createdAt)));
+    feedback.sort((a, b) => compareDesc(parseISO(a.createdAt), parseISO(b.createdAt)));
 
-        return { feedback };
-    } catch (error) {
-        return { error };
-    }
+    return { feedback };
 }
 
 export interface SiteDataInterface extends SiteInputType {
