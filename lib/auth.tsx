@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 import {
     GithubAuthProvider,
+    GoogleAuthProvider,
     onAuthStateChanged,
     signInWithPopup,
     signOut,
@@ -20,6 +21,7 @@ type AuthContextType = {
     user: MyUserType | null;
     loading: boolean;
     signinWithGitHub: () => void;
+    signinWithGoogle: () => void;
     signout: () => void;
 };
 
@@ -52,18 +54,35 @@ const AuthProvider: React.FC = ({ children }) => {
             setUser(user);
             createUser(userWithoutToken);
             Cookies.set('use-feedback-auth', 'true', { expires: 1 });
+            router.push('/dashboard');
             return user;
         } else {
             setUser(null);
+            router.push('/');
             return null;
         }
     };
 
     const signinWithGitHub = () => {
         const ghProvider = new GithubAuthProvider();
-        return signInWithPopup(auth, ghProvider).then((result) => {
-            return handleUser(result.user);
-        });
+        return signInWithPopup(auth, ghProvider)
+            .then((result) => {
+                return handleUser(result.user);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const signinWithGoogle = () => {
+        const googleProvider = new GoogleAuthProvider();
+        return signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                return handleUser(result.user);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     const signout = () => {
@@ -77,6 +96,7 @@ const AuthProvider: React.FC = ({ children }) => {
         user,
         loading,
         signinWithGitHub,
+        signinWithGoogle,
         signout,
     };
 

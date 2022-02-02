@@ -36,7 +36,7 @@ export interface SiteInputType extends Inputs {
 const AddSiteModal: React.FC = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const initialRef = useRef<FocusableElement>(null);
-    const finalRef = useRef<FocusableElement>(null);
+    const finalRef = useRef<HTMLButtonElement>(null);
     const toast = useToast();
     const auth = useAuth();
     const { mutate } = useSWRConfig();
@@ -48,7 +48,7 @@ const AddSiteModal: React.FC = ({ children }) => {
         formState: { errors },
     } = useForm<Inputs>();
 
-    const onCreateSite: SubmitHandler<Inputs> = ({ name, url }, e) => {
+    const onCreateSite: SubmitHandler<Inputs> = async ({ name, url }, e) => {
         e!.preventDefault();
 
         const newSite = {
@@ -58,7 +58,7 @@ const AddSiteModal: React.FC = ({ children }) => {
             url,
         };
 
-        createSite(newSite);
+        const { siteId } = await createSite(newSite);
         onClose();
         toast({
             title: 'Success!',
@@ -70,9 +70,9 @@ const AddSiteModal: React.FC = ({ children }) => {
 
         mutate(
             auth?.user ? ['/api/sites', auth.user.token] : null,
-            async (data: SitesAPIDataType) => {
-                return { sites: [...data.sites, newSite] };
-            },
+            async (data: SitesAPIDataType) => ({
+                sites: [...data.sites, { siteId, ...newSite }],
+            }),
             false,
         );
     };

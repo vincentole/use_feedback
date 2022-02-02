@@ -11,9 +11,11 @@ async function createUser(user: MyUserTypeWithoutTokenType) {
 }
 
 async function createSite(data: SiteInputType) {
-    const siteRef = addDoc(collection(db, 'sites'), {
+    const siteRef = await addDoc(collection(db, 'sites'), {
         ...data,
     });
+
+    return { siteId: siteRef.id };
 }
 
 async function createFeedback(feedback: FeedbackInputType) {
