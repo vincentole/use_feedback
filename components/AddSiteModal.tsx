@@ -17,6 +17,7 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
+import { FocusableElement } from '@chakra-ui/utils';
 
 import { useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -34,8 +35,8 @@ export interface SiteInputType extends Inputs {
 
 const AddSiteModal: React.FC = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const initialRef = useRef<HTMLInputElement>(null);
-    const finalRef = useRef<HTMLButtonElement>(null);
+    const initialRef = useRef<FocusableElement>(null);
+    const finalRef = useRef<FocusableElement>(null);
     const toast = useToast();
     const auth = useAuth();
     const { mutate } = useSWRConfig();

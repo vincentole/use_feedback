@@ -620,7 +620,7 @@
   dependencies:
     "@chakra-ui/utils" "1.10.0"
 
-"@chakra-ui/utils@1.10.0":
+"@chakra-ui/utils@1.10.0", "@chakra-ui/utils@^1.10.0":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@chakra-ui/utils/-/utils-1.10.0.tgz#c7d35c831ee0972841efe3a5171d22c16141d718"
   integrity sha512-Zm0RoZRBDXEhDCuj2oPeLyGTEH+SwCgbFPTSuwpKSVXOXCtjvA2zWC7cY6Fk1RDcMCVbL2cPlQTTgKnKPh79Lg==

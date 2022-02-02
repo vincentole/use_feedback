@@ -19,7 +19,7 @@ const TableSites: React.FC<SitesAPIDataType> = ({ sites }) => {
             <tbody>
                 {sites.map((site) => {
                     return (
-                        <Tr key={site.url} fontSize='sm'>
+                        <Tr key={site.siteId} fontSize='sm'>
                             <Td fontWeight='medium'>{site.name}</Td>
                             <Td>{site.url}</Td>
                             <Td>
@@ -28,11 +28,11 @@ const TableSites: React.FC<SitesAPIDataType> = ({ sites }) => {
                                     as={`/sites/${site.siteId}`}
                                     passHref={true}
                                 >
-                                    <Link>View Feedback</Link>
+                                    <Link color='blue.500'>View Feedback</Link>
                                 </NextLink>
                             </Td>
                             <Td>{format(parseISO(site.createdAt), 'PPpp')}</Td>
-                            <Td>Other</Td>
+                            <Td></Td>
                         </Tr>
                     );
                 })}

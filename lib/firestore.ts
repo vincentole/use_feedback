@@ -1,5 +1,5 @@
 import { SiteInputType } from '@/components/AddSiteModal';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, addDoc, deleteDoc, collection } from 'firebase/firestore';
 import { MyUserTypeWithoutTokenType } from './auth';
 import { db } from '@/lib/firebase';
 import { FeedbackInputType } from './firestore-admin';
@@ -22,4 +22,8 @@ async function createFeedback(feedback: FeedbackInputType) {
     });
 }
 
-export { createUser, createSite, createFeedback };
+async function deleteFeedback(feedbackId: string) {
+    await deleteDoc(doc(db, 'feedback', feedbackId));
+}
+
+export { createUser, createSite, createFeedback, deleteFeedback };

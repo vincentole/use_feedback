@@ -71,3 +71,14 @@ export async function getUserSites(uid: string) {
 
     return { sites };
 }
+
+export async function getUserFeedback(uid: string) {
+    const snapshot = await db.collection('feedback').where('authorId', '==', uid).get();
+    const feedback: FeedbackDataInterface[] = [];
+
+    snapshot.forEach((doc) => {
+        feedback.push({ feedbackId: doc.id, ...(doc.data() as FeedbackInputType) });
+    });
+
+    return { feedback };
+}

@@ -5,28 +5,31 @@ import DashboardShell from '@/components/DashboardShell';
 import TableSkeleton from '@/components/TableSkeleton';
 import useSWR from 'swr';
 import fetcher from '@/utils/fetcher';
-import { SitesAPIDataType } from '@/lib/firestore-admin';
+import { FeedbackAPIDataType } from '@/lib/firestore-admin';
 
-import TableSites from '@/components/TableSites';
-import HeaderSites from '@/components/HeaderSites';
+import TableFeedback from '@/components/TableFeedback';
+import HeaderFeedback from '@/components/HeaderFeedback';
 
-const Dashboard: NextPage = () => {
+const Feedback: NextPage = () => {
     const user = useAuth()?.user;
-    const { data } = useSWR<SitesAPIDataType>(user ? ['/api/sites', user?.token] : null, fetcher);
+    const { data } = useSWR<FeedbackAPIDataType>(
+        user ? ['/api/feedback', user?.token] : null,
+        fetcher,
+    );
 
     if (!data) {
         return (
             <DashboardShell>
-                <HeaderSites />
+                <HeaderFeedback />
                 <TableSkeleton />
             </DashboardShell>
         );
     }
 
-    if (data.sites.length === 0) {
+    if (data.feedback.length === 0) {
         return (
             <DashboardShell>
-                <HeaderSites />
+                <HeaderFeedback />
                 <EmptyState />
             </DashboardShell>
         );
@@ -34,10 +37,10 @@ const Dashboard: NextPage = () => {
 
     return (
         <DashboardShell>
-            <HeaderSites />
-            <TableSites sites={data.sites} />
+            <HeaderFeedback />
+            <TableFeedback feedback={data.feedback} />
         </DashboardShell>
     );
 };
 
-export default Dashboard;
+export default Feedback;

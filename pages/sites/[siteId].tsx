@@ -32,6 +32,7 @@ const FeedbackSite = ({ initialFeedback }: InferGetStaticPropsType<typeof getSta
             rating: 99999,
             status: '99999',
             text: textInputRef.current?.value as string,
+             
         };
 
         setAllFeedback((prev) => [
@@ -42,7 +43,7 @@ const FeedbackSite = ({ initialFeedback }: InferGetStaticPropsType<typeof getSta
     };
 
     return (
-        <Box display='flex' flexDirection='column' w='full' maxW='700px' mx='auto'>
+        <Box display='flex' flexDirection='column' w='full' maxW='700px' mx='auto' px={4}>
             <Box as='form' onSubmit={onSubmitHandler}>
                 <FormControl my={8}>
                     <FormLabel htmlFor='commehnt'>Comment</FormLabel>
