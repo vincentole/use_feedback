@@ -19,7 +19,6 @@ const FeedbackSite = ({ initialFeedback }: InferGetStaticPropsType<typeof getSta
     const allFeedbackList = allFeedback!.map((feedback) => (
         <Feedback key={feedback.feedbackId} feedback={feedback} />
     ));
-
     const onSubmitHandler = (e: FormEvent) => {
         e.preventDefault();
 
@@ -32,7 +31,6 @@ const FeedbackSite = ({ initialFeedback }: InferGetStaticPropsType<typeof getSta
             rating: 99999,
             status: '99999',
             text: textInputRef.current?.value as string,
-             
         };
 
         setAllFeedback((prev) => [
