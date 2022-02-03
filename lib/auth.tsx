@@ -101,7 +101,7 @@ const AuthProvider: React.FC = ({ children }) => {
     };
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 formatUser(user).then((fUser) => {
                     setUser(fUser);
@@ -109,6 +109,8 @@ const AuthProvider: React.FC = ({ children }) => {
             } else {
             }
         });
+
+        return unsubscribe();
     }, []);
 
     return <AuthContext.Provider value={context}>{children}</AuthContext.Provider>;
