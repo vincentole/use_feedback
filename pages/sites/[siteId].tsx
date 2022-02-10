@@ -38,6 +38,7 @@ const FeedbackSite = ({ initialFeedback }: InferGetStaticPropsType<typeof getSta
             ...prev!,
         ]);
         createFeedback(newFeedback);
+        if (textInputRef.current) textInputRef.current.value = '';
     };
 
     return (

@@ -13,7 +13,6 @@ import HeaderSites from '@/components/HeaderSites';
 const Dashboard: NextPage = () => {
     const user = useAuth()?.user;
     const { data } = useSWR<SitesAPIDataType>(user ? ['/api/sites', user?.token] : null, fetcher);
-    
     if (!data) {
         return (
             <DashboardShell>
